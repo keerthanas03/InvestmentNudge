@@ -3,13 +3,30 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: SpendWise AI API specification
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: transactions
+    description: Transaction operations
+  - name: categories
+    description: Category operations
+  - name: budgets
+    description: Budget operations
+  - name: nudges
+    description: Nudge engine operations
+  - name: investments
+    description: Investment operations
+  - name: gamification
+    description: Gamification operations
+  - name: dashboard
+    description: Dashboard summary operations
+  - name: admin
+    description: Admin operations
+
 paths:
   /healthz:
     get:
@@ -24,6 +41,556 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  # Transactions
+  /transactions:
+    get:
+      operationId: listTransactions
+      tags: [transactions]
+      summary: List all transactions
+      parameters:
+        - in: query
+          name: category
+          schema:
+            type: string
+        - in: query
+          name: status
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
+    post:
+      operationId: createTransaction
+      tags: [transactions]
+      summary: Create a transaction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTransactionBody"
+      responses:
+        "201":
+          description: Created transaction
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+
+  /transactions/simulate:
+    post:
+      operationId: simulateTransaction
+      tags: [transactions]
+      summary: Simulate a random transaction
+      responses:
+        "201":
+          description: Simulated transaction
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+
+  /transactions/{id}:
+    get:
+      operationId: getTransaction
+      tags: [transactions]
+      summary: Get a transaction by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Transaction
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteTransaction
+      tags: [transactions]
+      summary: Delete a transaction
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # Categories
+  /categories:
+    get:
+      operationId: listCategories
+      tags: [categories]
+      summary: List all categories
+      responses:
+        "200":
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+    post:
+      operationId: createCategory
+      tags: [categories]
+      summary: Create a category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCategoryBody"
+      responses:
+        "201":
+          description: Created category
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+
+  /categories/{id}:
+    get:
+      operationId: getCategory
+      tags: [categories]
+      summary: Get a category by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Category
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateCategory
+      tags: [categories]
+      summary: Update a category
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCategoryBody"
+      responses:
+        "200":
+          description: Updated category
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+    delete:
+      operationId: deleteCategory
+      tags: [categories]
+      summary: Delete a category
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # Budgets
+  /budgets:
+    get:
+      operationId: listBudgets
+      tags: [budgets]
+      summary: List all budgets
+      responses:
+        "200":
+          description: List of budgets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Budget"
+    post:
+      operationId: createBudget
+      tags: [budgets]
+      summary: Create a budget
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBudgetBody"
+      responses:
+        "201":
+          description: Created budget
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Budget"
+
+  /budgets/{id}:
+    patch:
+      operationId: updateBudget
+      tags: [budgets]
+      summary: Update a budget
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateBudgetBody"
+      responses:
+        "200":
+          description: Updated budget
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Budget"
+    delete:
+      operationId: deleteBudget
+      tags: [budgets]
+      summary: Delete a budget
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # Nudge Rules
+  /nudge-rules:
+    get:
+      operationId: listNudgeRules
+      tags: [nudges]
+      summary: List all nudge rules
+      responses:
+        "200":
+          description: List of nudge rules
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/NudgeRule"
+    post:
+      operationId: createNudgeRule
+      tags: [nudges]
+      summary: Create a nudge rule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateNudgeRuleBody"
+      responses:
+        "201":
+          description: Created nudge rule
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NudgeRule"
+
+  /nudge-rules/{id}:
+    patch:
+      operationId: updateNudgeRule
+      tags: [nudges]
+      summary: Update a nudge rule
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateNudgeRuleBody"
+      responses:
+        "200":
+          description: Updated nudge rule
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NudgeRule"
+    delete:
+      operationId: deleteNudgeRule
+      tags: [nudges]
+      summary: Delete a nudge rule
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /nudges/pending:
+    get:
+      operationId: listPendingNudges
+      tags: [nudges]
+      summary: List pending nudges
+      responses:
+        "200":
+          description: List of pending nudges
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Nudge"
+
+  /nudges/{id}/dismiss:
+    post:
+      operationId: dismissNudge
+      tags: [nudges]
+      summary: Dismiss a nudge
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Dismissed nudge
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Nudge"
+
+  /nudges/{id}/accept:
+    post:
+      operationId: acceptNudge
+      tags: [nudges]
+      summary: Accept a nudge (invest)
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Accepted nudge
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Nudge"
+
+  # Investments
+  /investments:
+    get:
+      operationId: listInvestments
+      tags: [investments]
+      summary: List all investments
+      responses:
+        "200":
+          description: List of investments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Investment"
+
+  /investments/settings:
+    get:
+      operationId: getInvestmentSettings
+      tags: [investments]
+      summary: Get auto-invest settings
+      responses:
+        "200":
+          description: Investment settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvestmentSettings"
+    patch:
+      operationId: updateInvestmentSettings
+      tags: [investments]
+      summary: Update auto-invest settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateInvestmentSettingsBody"
+      responses:
+        "200":
+          description: Updated settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvestmentSettings"
+
+  # Gamification
+  /gamification:
+    get:
+      operationId: getGamification
+      tags: [gamification]
+      summary: Get user gamification data
+      responses:
+        "200":
+          description: Gamification data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Gamification"
+
+  /gamification/leaderboard:
+    get:
+      operationId: getLeaderboard
+      tags: [gamification]
+      summary: Get leaderboard
+      responses:
+        "200":
+          description: Leaderboard
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LeaderboardEntry"
+
+  # Dashboard
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Get dashboard summary stats
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /dashboard/spending-trend:
+    get:
+      operationId: getSpendingTrend
+      tags: [dashboard]
+      summary: Get daily spending trend data
+      responses:
+        "200":
+          description: Spending trend
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SpendingTrendPoint"
+
+  /dashboard/category-breakdown:
+    get:
+      operationId: getCategoryBreakdown
+      tags: [dashboard]
+      summary: Get category spending breakdown
+      responses:
+        "200":
+          description: Category breakdown
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CategoryBreakdownItem"
+
+  # Admin
+  /admin/stats:
+    get:
+      operationId: getAdminStats
+      tags: [admin]
+      summary: Get admin-level stats
+      responses:
+        "200":
+          description: Admin stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminStats"
+
+  /admin/spending-trends:
+    get:
+      operationId: getAdminSpendingTrends
+      tags: [admin]
+      summary: Get admin spending trends over time
+      responses:
+        "200":
+          description: Spending trends
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SpendingTrendPoint"
+
+  /admin/category-analysis:
+    get:
+      operationId: getAdminCategoryAnalysis
+      tags: [admin]
+      summary: Get admin category spending analysis
+      responses:
+        "200":
+          description: Category analysis
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CategoryBreakdownItem"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +601,483 @@ components:
       required:
         - status
 
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: integer
+        merchant:
+          type: string
+        amount:
+          type: number
+        category:
+          type: string
+        status:
+          type: string
+          description: "normal or impulse"
+        isImpulse:
+          type: boolean
+        nudgeTriggered:
+          type: boolean
+        investmentSuggested:
+          type: ["number", "null"]
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - merchant
+        - amount
+        - category
+        - status
+        - isImpulse
+        - nudgeTriggered
+        - investmentSuggested
+        - notes
+        - createdAt
+
+    CreateTransactionBody:
+      type: object
+      properties:
+        merchant:
+          type: string
+        amount:
+          type: number
+        category:
+          type: string
+        notes:
+          type: string
+      required:
+        - merchant
+        - amount
+        - category
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        color:
+          type: string
+        icon:
+          type: string
+        blockSpending:
+          type: boolean
+        allowInvestNudges:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - color
+        - icon
+        - blockSpending
+        - allowInvestNudges
+        - createdAt
+
+    CreateCategoryBody:
+      type: object
+      properties:
+        name:
+          type: string
+        color:
+          type: string
+        icon:
+          type: string
+        blockSpending:
+          type: boolean
+        allowInvestNudges:
+          type: boolean
+      required:
+        - name
+
+    UpdateCategoryBody:
+      type: object
+      properties:
+        name:
+          type: string
+        color:
+          type: string
+        icon:
+          type: string
+        blockSpending:
+          type: boolean
+        allowInvestNudges:
+          type: boolean
+
+    Budget:
+      type: object
+      properties:
+        id:
+          type: integer
+        category:
+          type: string
+        limitAmount:
+          type: number
+        spentAmount:
+          type: number
+        period:
+          type: string
+          description: "monthly or weekly"
+        budgetType:
+          type: string
+          description: "soft or hard"
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - category
+        - limitAmount
+        - spentAmount
+        - period
+        - budgetType
+        - isActive
+        - createdAt
+
+    CreateBudgetBody:
+      type: object
+      properties:
+        category:
+          type: string
+        limitAmount:
+          type: number
+        period:
+          type: string
+        budgetType:
+          type: string
+      required:
+        - category
+        - limitAmount
+        - period
+        - budgetType
+
+    UpdateBudgetBody:
+      type: object
+      properties:
+        category:
+          type: string
+        limitAmount:
+          type: number
+        period:
+          type: string
+        budgetType:
+          type: string
+        isActive:
+          type: boolean
+
+    NudgeRule:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        thresholdAmount:
+          type: number
+        investmentType:
+          type: string
+          description: "fixed or percentage"
+        investmentValue:
+          type: number
+        nudgeIntensity:
+          type: string
+          description: "gentle or aggressive"
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - thresholdAmount
+        - investmentType
+        - investmentValue
+        - nudgeIntensity
+        - isActive
+        - createdAt
+
+    CreateNudgeRuleBody:
+      type: object
+      properties:
+        name:
+          type: string
+        thresholdAmount:
+          type: number
+        investmentType:
+          type: string
+        investmentValue:
+          type: number
+        nudgeIntensity:
+          type: string
+      required:
+        - name
+        - thresholdAmount
+        - investmentType
+        - investmentValue
+        - nudgeIntensity
+
+    UpdateNudgeRuleBody:
+      type: object
+      properties:
+        name:
+          type: string
+        thresholdAmount:
+          type: number
+        investmentType:
+          type: string
+        investmentValue:
+          type: number
+        nudgeIntensity:
+          type: string
+        isActive:
+          type: boolean
+
+    Nudge:
+      type: object
+      properties:
+        id:
+          type: integer
+        transactionId:
+          type: integer
+        nudgeRuleId:
+          type: ["integer", "null"]
+        message:
+          type: string
+        suggestedInvestment:
+          type: number
+        status:
+          type: string
+          description: "pending, accepted, dismissed"
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - transactionId
+        - nudgeRuleId
+        - message
+        - suggestedInvestment
+        - status
+        - createdAt
+
+    Investment:
+      type: object
+      properties:
+        id:
+          type: integer
+        amount:
+          type: number
+        source:
+          type: string
+          description: "manual or auto"
+        category:
+          type: string
+        transactionId:
+          type: ["integer", "null"]
+        nudgeId:
+          type: ["integer", "null"]
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - amount
+        - source
+        - category
+        - transactionId
+        - nudgeId
+        - notes
+        - createdAt
+
+    InvestmentSettings:
+      type: object
+      properties:
+        id:
+          type: integer
+        overspendPercent:
+          type: number
+        weeklyCap:
+          type: number
+        autoInvestEnabled:
+          type: boolean
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - overspendPercent
+        - weeklyCap
+        - autoInvestEnabled
+        - updatedAt
+
+    UpdateInvestmentSettingsBody:
+      type: object
+      properties:
+        overspendPercent:
+          type: number
+        weeklyCap:
+          type: number
+        autoInvestEnabled:
+          type: boolean
+
+    Gamification:
+      type: object
+      properties:
+        id:
+          type: integer
+        totalPoints:
+          type: integer
+        level:
+          type: string
+        streak:
+          type: integer
+        impulsesAvoided:
+          type: integer
+        budgetsRespected:
+          type: integer
+        investmentsMade:
+          type: integer
+        streakBonuses:
+          type: integer
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - totalPoints
+        - level
+        - streak
+        - impulsesAvoided
+        - budgetsRespected
+        - investmentsMade
+        - streakBonuses
+        - updatedAt
+
+    LeaderboardEntry:
+      type: object
+      properties:
+        rank:
+          type: integer
+        name:
+          type: string
+        points:
+          type: integer
+        level:
+          type: string
+        streak:
+          type: integer
+      required:
+        - rank
+        - name
+        - points
+        - level
+        - streak
+
+    DashboardSummary:
+      type: object
+      properties:
+        todaySpend:
+          type: number
+        totalInvested:
+          type: number
+        impulseScore:
+          type: integer
+        activeAlerts:
+          type: integer
+        weeklySpend:
+          type: number
+        monthlySpend:
+          type: number
+        pendingNudgesCount:
+          type: integer
+        totalTransactions:
+          type: integer
+      required:
+        - todaySpend
+        - totalInvested
+        - impulseScore
+        - activeAlerts
+        - weeklySpend
+        - monthlySpend
+        - pendingNudgesCount
+        - totalTransactions
+
+    SpendingTrendPoint:
+      type: object
+      properties:
+        date:
+          type: string
+        totalSpend:
+          type: number
+        impulseSpend:
+          type: number
+        normalSpend:
+          type: number
+      required:
+        - date
+        - totalSpend
+        - impulseSpend
+        - normalSpend
+
+    CategoryBreakdownItem:
+      type: object
+      properties:
+        category:
+          type: string
+        amount:
+          type: number
+        count:
+          type: integer
+        color:
+          type: string
+      required:
+        - category
+        - amount
+        - count
+        - color
+
+    AdminStats:
+      type: object
+      properties:
+        totalNudgesFired:
+          type: integer
+        investmentsTriggered:
+          type: integer
+        totalTransactions:
+          type: integer
+        totalUsers:
+          type: integer
+        avgImpulseScore:
+          type: number
+        totalAmountInvested:
+          type: number
+        nudgeAcceptanceRate:
+          type: number
+      required:
+        - totalNudgesFired
+        - investmentsTriggered
+        - totalTransactions
+        - totalUsers
+        - avgImpulseScore
+        - totalAmountInvested
+        - nudgeAcceptanceRate
