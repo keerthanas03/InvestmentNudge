@@ -1,56 +1,84 @@
 # Investment Nudger 🚀
 
-**Investment Nudger** is a premium, full-stack fintech platform designed to transform impulsive spending habits into consistent wealth-building engines using behavioral psychology and AI-driven insights. Designed with a stunning, performance-first glassmorphic aesthetic.
-
-## ✨ Features
-
-- **🧠 AI Financial Coach**: Get personalized behavioral insights, transaction analysis, and autonomous investment nudges based on your spending footprint.
-- **🛡️ Impulse Controls**: Intercept high-risk emotional spending with smart cooldown timers and dynamic category-locking mechanisms.
-- **🎯 Smart Budgets**: Establish intelligent guardrails that automatically scale alerts and nudges when you approach your predetermined limits.
-- **📈 Real-Time Dashboards**: Visualize systemic liquidity, categorical densities, and cognitive health analytics using highly responsive `Recharts` and bouncy `Framer Motion` animations.
-- **🎮 Gamification**: Build resilient micro-investing habits through streaks, unlockable achievements, and healthy challenges. 
-
-## 🛠️ Tech Stack
-
-### Frontend (User Interface)
-- **Framework**: [Next.js](https://nextjs.org/) / Vite with React
-- **Styling**: Tailwind CSS with custom Glassmorphism styling (`backdrop-filter`) and smooth dynamic animations.
-- **Motion & Charts**: Framer Motion for spring physics and layout staggering, alongside Recharts for robust data visualization.
-
-### Backend (Logic & APIs)
-- **Server**: Node.js with Express and TypeScript.
-- **Database**: PostgreSQL (managed and queried utilizing [Drizzle ORM](https://orm.drizzle.team/)).
-- **Types**: Zod schemas combined with OpenAPI generators ensure pristine end-to-end type safety from database to UI.
-- **Monorepo Management**: Built utilizing `pnpm` workspace functionality for robust package splitting (`@workspace/api-client-react`, `@workspace/db`).
-
-## 🚀 Getting Started
-
-Ensure you have [Node.js](https://nodejs.org/) and [pnpm](https://pnpm.io/) installed.
-
-1. **Install Dependencies**
-   \`\`\`bash
-   pnpm install
-   \`\`\`
-
-2. **Database Setup**
-   Configure your PostgreSQL connection in your local `.env`. Then execute:
-   \`\`\`bash
-   pnpm db:push
-   \`\`\`
-
-3. **Spin Up the Local Environment**
-   \`\`\`bash
-   # Starts the API server (Port 5000) and the UI Server (Port 3000) concurrently
-   pnpm dev
-   \`\`\`
-
-## 🎨 Design System
-
-The application relies on a **"Pale Glassmorphic"** design system:
-- Harmonious pale pastel color palette with targeted gradients.
-- Fluid, bouncy `y-axis` transitions.
-- Elevated backdrop-blurred overlays and subtle frosted card borders.
+> An AI-powered, full-stack behavioral finance application engineered to intercept impulse spending and redirect those funds into long-term wealth building.
 
 ---
 
-*Built for those who want to turn today's loose change into tomorrow's legacy.*
+## 🎯 The Purpose (Why this was built)
+Traditional budgeting apps only tell you where your money went *after* the fact. **Investment Nudger** tackles the root cause of financial leakage: emotional and impulsive spending. 
+
+By introducing positive psychological friction (like Purchase Cooldown Timers) and utilizing AI to detect detrimental spending patterns (like late-night shopping binges), this platform proactively stops bad financial decisions in real-time and nudges the user to invest that saved capital instead.
+
+---
+
+## 💼 For Recruiters & Hiring Managers
+This project was developed to demonstrate proficiency in architecting, designing, and engineering a production-ready, full-stack web application. 
+
+### Key Engineering Highlights:
+- **Monorepo Architecture**: Structured as a `pnpm` workspace organizing independent packages for the frontend UI, backend API server, database layer, and shared schema definitions. This demonstrates an understanding of scalable, enterprise-level repository management.
+- **End-to-End Type Safety**: Utilizes **Zod** and **TypeScript** across the entire stack. Database schemas tightly couple with API request validations and frontend UI props, eliminating runtime type errors.
+- **Advanced State & Animations**: Leverages **Framer Motion** for complex, orchestrated spring-physics entrance animations and **React Query** for robust asynchronous server-state management.
+- **Custom Design System**: Features a bespoke **"Pale Glassmorphic"** UI utilizing TailwindCSS, `backdrop-filter` rendering, and deeply integrated responsive data visualization via **Recharts**.
+
+---
+
+## ✨ Core Product Features
+
+### 🧠 Pattern Recognition & AI Coach
+- **Behavioral Analytics**: The system analyzes transaction history to classify spending behavior (e.g., "Late Night Activity", "Weekend Spikes").
+- **Dynamic Nudges**: Generates context-aware, intensity-based nudges urging the user to reconsider high-risk purchases.
+
+### 🛡️ Impulse Controls & Friction
+- **Cooldown Timers**: A customized, animated psychological buffer (15s to 120s) that the user must wait through before confirming an unauthorized "want" purchase.
+- **Spending Lock Windows**: Allows users to freeze specific spending categories (e.g., Electronics) or timeframes (e.g., 10 PM - 7 AM).
+
+### 🎯 Smart Guardrails & Dashboards
+- **Systemic Liquidity Tracking**: A real-time executive dashboard offering macro-views of "Global Flow" versus "Risk Vectors" (impulse spending).
+- **Automated Reallocation**: When the app successfully prevents an impulse purchase, it instantly calculates the savings and proposes an immediate micro-investment.
+
+---
+
+## 🛠️ Technical Stack
+
+### Frontend Architecture
+- **Core**: React 18, Next.js / Vite, TypeScript
+- **Styling**: TailwindCSS (Custom Glassmorphism configuration)
+- **State Management**: React Query (@tanstack/react-query), React Hook Form
+- **Animation & Visuals**: Framer Motion, Recharts, Lucide Icons
+
+### Backend Architecture
+- **Server Environment**: Node.js, Express.js
+- **Database**: PostgreSQL
+- **ORM (Object Relational Mapping)**: Drizzle ORM (for highly optimized, type-safe SQL queries)
+- **Validation**: Zod (Schema declaration and data validation)
+
+---
+
+## 🚀 Getting Started Locally
+
+To test this application on your local machine:
+
+**1. Clone & Install Dependencies**
+Ensure you have `Node.js` and `pnpm` installed.
+\`\`\`bash
+git clone https://github.com/keerthanas03/InvestmentNudge.git
+cd InvestmentNudge
+pnpm install
+\`\`\`
+
+**2. Database Configuration**
+Ensure your local PostgreSQL service is running. Configure the `DATABASE_URL` in your `.env` file at the root. Then push the relational schema to your database:
+\`\`\`bash
+pnpm db:push
+\`\`\`
+
+**3. Launch the Application**
+Spin up both the Express API Backend and the Vite React Frontend simultaneously via the monorepo dev script:
+\`\`\`bash
+pnpm dev
+\`\`\`
+- **Frontend** will be available on `http://localhost:3000`
+- **Backend API** will be available on `http://localhost:5000`
+
+---
+*Developed with a focus on writing clean, maintainable, and highly responsive code.*
