@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { db, gamificationTable } from "@workspace/db";
+import { gamificationStore } from "../lib/in-memory-db";
 
 const router: IRouter = Router();
 
@@ -13,34 +13,24 @@ const LEADERBOARD = [
 ];
 
 router.get("/gamification", async (_req, res): Promise<void> => {
-  let [gamification] = await db.select().from(gamificationTable);
-
-  if (!gamification) {
-    const [newGamification] = await db
-      .insert(gamificationTable)
-      .values({
-        totalPoints: 150,
-        level: "Starter",
-        streak: 2,
-        impulsesAvoided: 3,
-        budgetsRespected: 1,
-        investmentsMade: 2,
-        streakBonuses: 0,
-      })
-      .returning();
-    gamification = newGamification;
-  }
-
-  res.json(gamification);
+  res.json({
+    totalPoints: gamificationStore.points,
+    level: gamificationStore.level <= 2 ? "Starter" : gamificationStore.level <= 4 ? "Bronze" : gamificationStore.level <= 6 ? "Silver" : "Gold",
+    streak: gamificationStore.streak,
+    impulsesAvoided: 3,
+    budgetsRespected: 2,
+    investmentsMade: 3,
+    streakBonuses: 1,
+    badges: gamificationStore.badges,
+  });
 });
 
 router.get("/gamification/leaderboard", async (_req, res): Promise<void> => {
-  const [gamification] = await db.select().from(gamificationTable);
-  const userPoints = gamification?.totalPoints ?? 0;
-  const userLevel = gamification?.level ?? "Starter";
-  const userStreak = gamification?.streak ?? 0;
+  const userPoints = gamificationStore.points;
+  const userLevel = "Bronze";
+  const userStreak = gamificationStore.streak;
 
-  const board = LEADERBOARD.map(entry => {
+  const board = LEADERBOARD.map((entry) => {
     if (entry.name === "You") {
       return { ...entry, points: userPoints, level: userLevel, streak: userStreak };
     }

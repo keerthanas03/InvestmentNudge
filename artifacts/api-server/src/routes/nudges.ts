@@ -1,42 +1,47 @@
 import { Router, type IRouter } from "express";
-import { eq } from "drizzle-orm";
-import { db, nudgesTable, nudgeRulesTable, investmentsTable, gamificationTable } from "@workspace/db";
-import {
-  CreateNudgeRuleBody,
-  UpdateNudgeRuleBody,
-  UpdateNudgeRuleParams,
+import { 
+  CreateNudgeRuleBody, 
+  UpdateNudgeRuleBody, 
+  UpdateNudgeRuleParams, 
   DeleteNudgeRuleParams,
   DismissNudgeParams,
-  AcceptNudgeParams,
+  AcceptNudgeParams
 } from "@workspace/api-zod";
+import { nudgeRulesStore, nudgesStore } from "../lib/in-memory-db";
 
 const router: IRouter = Router();
 
 router.get("/nudge-rules", async (_req, res): Promise<void> => {
-  const rules = await db.select().from(nudgeRulesTable).orderBy(nudgeRulesTable.createdAt);
-  res.json(rules);
+  res.json(nudgeRulesStore);
 });
 
 router.post("/nudge-rules", async (req, res): Promise<void> => {
   const parsed = CreateNudgeRuleBody.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: parsed.error.message });
+    res.status(400).json({ error: "Invalid request payload", details: parsed.error.issues });
     return;
   }
 
-  const [rule] = await db
-    .insert(nudgeRulesTable)
-    .values({
-      name: parsed.data.name,
-      thresholdAmount: parsed.data.thresholdAmount,
-      investmentType: parsed.data.investmentType,
-      investmentValue: parsed.data.investmentValue,
-      nudgeIntensity: parsed.data.nudgeIntensity,
-      isActive: true,
-    })
-    .returning();
+  const { data: body } = parsed;
 
-  res.status(201).json(rule);
+  const newRule = {
+    id: nudgeRulesStore.length + 1,
+    name: body.name,
+    category: body.category,
+    condition: body.condition || ">",
+    thresholdAmount: Number(body.thresholdAmount),
+    message: body.message || "",
+    ruleType: body.ruleType,
+    priority: body.priority || "medium",
+    investmentType: body.investmentType || "stocks",
+    investmentValue: body.investmentValue || 0,
+    nudgeIntensity: body.nudgeIntensity || "medium",
+    isActive: true,
+    createdAt: new Date().toISOString()
+  };
+
+  nudgeRulesStore.push(newRule);
+  res.status(201).json(newRule);
 });
 
 router.patch("/nudge-rules/:id", async (req, res): Promise<void> => {
@@ -46,32 +51,15 @@ router.patch("/nudge-rules/:id", async (req, res): Promise<void> => {
     return;
   }
 
-  const parsed = UpdateNudgeRuleBody.safeParse(req.body);
-  if (!parsed.success) {
-    res.status(400).json({ error: parsed.error.message });
-    return;
-  }
-
-  const updateData: Record<string, unknown> = {};
-  if (parsed.data.name !== undefined) updateData.name = parsed.data.name;
-  if (parsed.data.thresholdAmount !== undefined) updateData.thresholdAmount = parsed.data.thresholdAmount;
-  if (parsed.data.investmentType !== undefined) updateData.investmentType = parsed.data.investmentType;
-  if (parsed.data.investmentValue !== undefined) updateData.investmentValue = parsed.data.investmentValue;
-  if (parsed.data.nudgeIntensity !== undefined) updateData.nudgeIntensity = parsed.data.nudgeIntensity;
-  if (parsed.data.isActive !== undefined) updateData.isActive = parsed.data.isActive;
-
-  const [rule] = await db
-    .update(nudgeRulesTable)
-    .set(updateData)
-    .where(eq(nudgeRulesTable.id, params.data.id))
-    .returning();
-
-  if (!rule) {
+  const idx = nudgeRulesStore.findIndex(r => r.id === Number(params.data.id));
+  if (idx === -1) {
     res.status(404).json({ error: "Nudge rule not found" });
     return;
   }
 
-  res.json(rule);
+  const body = req.body;
+  nudgeRulesStore[idx] = { ...nudgeRulesStore[idx], ...body };
+  res.json(nudgeRulesStore[idx]);
 });
 
 router.delete("/nudge-rules/:id", async (req, res): Promise<void> => {
@@ -81,27 +69,15 @@ router.delete("/nudge-rules/:id", async (req, res): Promise<void> => {
     return;
   }
 
-  const [rule] = await db
-    .delete(nudgeRulesTable)
-    .where(eq(nudgeRulesTable.id, params.data.id))
-    .returning();
-
-  if (!rule) {
-    res.status(404).json({ error: "Nudge rule not found" });
-    return;
+  const idx = nudgeRulesStore.findIndex(r => r.id === Number(params.data.id));
+  if (idx !== -1) {
+    nudgeRulesStore.splice(idx, 1);
   }
-
   res.sendStatus(204);
 });
 
 router.get("/nudges/pending", async (_req, res): Promise<void> => {
-  const nudges = await db
-    .select()
-    .from(nudgesTable)
-    .where(eq(nudgesTable.status, "pending"))
-    .orderBy(nudgesTable.createdAt);
-
-  res.json(nudges);
+  res.json(nudgesStore);
 });
 
 router.post("/nudges/:id/dismiss", async (req, res): Promise<void> => {
@@ -111,33 +87,13 @@ router.post("/nudges/:id/dismiss", async (req, res): Promise<void> => {
     return;
   }
 
-  const [nudge] = await db
-    .update(nudgesTable)
-    .set({ status: "dismissed" })
-    .where(eq(nudgesTable.id, params.data.id))
-    .returning();
-
-  if (!nudge) {
+  const nudge = nudgesStore.find(n => n.id === Number(params.data.id));
+  if (nudge) {
+    nudge.status = "dismissed";
+    res.json(nudge);
+  } else {
     res.status(404).json({ error: "Nudge not found" });
-    return;
   }
-
-  const [gamification] = await db.select().from(gamificationTable);
-  if (gamification) {
-    const newPoints = gamification.totalPoints + 50;
-    const newImpulsesAvoided = gamification.impulsesAvoided + 1;
-    const level = computeLevel(newPoints);
-    await db
-      .update(gamificationTable)
-      .set({
-        totalPoints: newPoints,
-        impulsesAvoided: newImpulsesAvoided,
-        level,
-      })
-      .where(eq(gamificationTable.id, gamification.id));
-  }
-
-  res.json(nudge);
 });
 
 router.post("/nudges/:id/accept", async (req, res): Promise<void> => {
@@ -147,49 +103,13 @@ router.post("/nudges/:id/accept", async (req, res): Promise<void> => {
     return;
   }
 
-  const [nudge] = await db
-    .update(nudgesTable)
-    .set({ status: "accepted" })
-    .where(eq(nudgesTable.id, params.data.id))
-    .returning();
-
-  if (!nudge) {
+  const nudge = nudgesStore.find(n => n.id === Number(params.data.id));
+  if (nudge) {
+    nudge.status = "accepted";
+    res.json(nudge);
+  } else {
     res.status(404).json({ error: "Nudge not found" });
-    return;
   }
-
-  await db.insert(investmentsTable).values({
-    amount: nudge.suggestedInvestment,
-    source: "auto",
-    category: "nudge-investment",
-    transactionId: nudge.transactionId,
-    nudgeId: nudge.id,
-    notes: "Auto-invested via nudge",
-  });
-
-  const [gamification] = await db.select().from(gamificationTable);
-  if (gamification) {
-    const newPoints = gamification.totalPoints + 75;
-    const newInvestmentsMade = gamification.investmentsMade + 1;
-    const level = computeLevel(newPoints);
-    await db
-      .update(gamificationTable)
-      .set({
-        totalPoints: newPoints,
-        investmentsMade: newInvestmentsMade,
-        level,
-      })
-      .where(eq(gamificationTable.id, gamification.id));
-  }
-
-  res.json(nudge);
 });
-
-function computeLevel(points: number): string {
-  if (points >= 5000) return "Gold";
-  if (points >= 2000) return "Silver";
-  if (points >= 500) return "Bronze";
-  return "Starter";
-}
 
 export default router;

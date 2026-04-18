@@ -5,10 +5,12 @@ import { z } from "zod/v4";
 export const nudgeRulesTable = pgTable("nudge_rules", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
+  category: text("category").notNull(),
+  condition: text("condition").notNull().default(">"),
   thresholdAmount: real("threshold_amount").notNull(),
-  investmentType: text("investment_type").notNull().default("percentage"),
-  investmentValue: real("investment_value").notNull(),
-  nudgeIntensity: text("nudge_intensity").notNull().default("gentle"),
+  message: text("message").notNull(),
+  ruleType: text("rule_type").notNull(), // Impulse / Need / Investment / Luxury / Waste
+  priority: text("priority").notNull().default("medium"), // high, medium, low
   isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });

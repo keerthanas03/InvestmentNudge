@@ -591,6 +591,51 @@ paths:
                 items:
                   $ref: "#/components/schemas/CategoryBreakdownItem"
 
+  /emi-analyze:
+    post:
+      operationId: analyzeEmi
+      tags: [planner]
+      summary: Analyze EMI affordability
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmiAnalysisRequest"
+      responses:
+        "200":
+          description: Safe limit and Risk Analysis result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmiAnalysisResponse"
+
+  /analysis:
+    get:
+      operationId: getAnalysis
+      tags: [planner]
+      summary: Get AI spending behavior analysis
+      responses:
+        "200":
+          description: AI analysis summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AIAnalysisResponse"
+
+  /predictions:
+    get:
+      operationId: getPredictions
+      tags: [planner]
+      summary: Get overspending predictions
+      responses:
+        "200":
+          description: Predictions summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AIPredictionResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -789,16 +834,21 @@ components:
           type: integer
         name:
           type: string
+        category:
+          type: string
+        condition:
+          type: string
+          description: " > or < "
         thresholdAmount:
           type: number
-        investmentType:
+        message:
           type: string
-          description: "fixed or percentage"
-        investmentValue:
-          type: number
-        nudgeIntensity:
+        ruleType:
           type: string
-          description: "gentle or aggressive"
+          description: "Impulse, Need, Investment, Luxury, Waste"
+        priority:
+          type: string
+          description: "high, medium, low"
         isActive:
           type: boolean
         createdAt:
@@ -807,10 +857,12 @@ components:
       required:
         - id
         - name
+        - category
+        - condition
         - thresholdAmount
-        - investmentType
-        - investmentValue
-        - nudgeIntensity
+        - message
+        - ruleType
+        - priority
         - isActive
         - createdAt
 
@@ -819,33 +871,42 @@ components:
       properties:
         name:
           type: string
+        category:
+          type: string
+        condition:
+          type: string
         thresholdAmount:
           type: number
-        investmentType:
+        message:
           type: string
-        investmentValue:
-          type: number
-        nudgeIntensity:
+        ruleType:
+          type: string
+        priority:
           type: string
       required:
         - name
+        - category
+        - condition
         - thresholdAmount
-        - investmentType
-        - investmentValue
-        - nudgeIntensity
+        - message
+        - ruleType
 
     UpdateNudgeRuleBody:
       type: object
       properties:
         name:
           type: string
+        category:
+          type: string
+        condition:
+          type: string
         thresholdAmount:
           type: number
-        investmentType:
+        message:
           type: string
-        investmentValue:
-          type: number
-        nudgeIntensity:
+        ruleType:
+          type: string
+        priority:
           type: string
         isActive:
           type: boolean
@@ -1081,3 +1142,89 @@ components:
         - avgImpulseScore
         - totalAmountInvested
         - nudgeAcceptanceRate
+
+    EmiAnalysisRequest:
+      type: object
+      properties:
+        salary:
+          type: number
+        productType:
+          type: string
+        cost:
+          type: number
+        downPayment:
+          type: number
+        tenure:
+          type: integer
+        interestRate:
+          type: number
+      required:
+        - salary
+        - productType
+        - cost
+        - downPayment
+        - tenure
+        - interestRate
+
+    EmiAnalysisResponse:
+      type: object
+      properties:
+        emi:
+          type: number
+        safeLimit:
+          type: number
+        risk:
+          type: string
+          description: "SAFE, CAUTION, or DANGER"
+        percentage:
+          type: number
+      required:
+        - emi
+        - safeLimit
+        - risk
+        - percentage
+
+    AIAnalysisResponse:
+      type: object
+      properties:
+        userProfile:
+          type: object
+          properties:
+            classification: { type: string }
+            impulseScore: { type: number }
+            dominantCategory: { type: string }
+          required: [classification, impulseScore, dominantCategory]
+        activeNudge:
+          type: object
+          properties:
+            intensity: { type: string }
+            message: { type: string }
+            suggestedAction: { type: string }
+          required: [intensity, message, suggestedAction]
+        behavioralStats:
+          type: object
+          properties:
+            lateNightSpends: { type: integer }
+            weekendSpends: { type: integer }
+          required: [lateNightSpends, weekendSpends]
+      required:
+        - userProfile
+        - activeNudge
+        - behavioralStats
+
+    AIPredictionResponse:
+      type: object
+      properties:
+        predictedSpend:
+          type: number
+        riskScore:
+          type: number
+        riskLevel:
+          type: string
+        savingsPotential:
+          type: number
+      required:
+        - predictedSpend
+        - riskScore
+        - riskLevel
+        - savingsPotential

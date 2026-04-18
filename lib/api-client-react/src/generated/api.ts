@@ -17,6 +17,8 @@ import type {
 } from "@tanstack/react-query";
 
 import type {
+  AIAnalysisResponse,
+  AIPredictionResponse,
   AdminStats,
   Budget,
   Category,
@@ -26,12 +28,16 @@ import type {
   CreateNudgeRuleBody,
   CreateTransactionBody,
   DashboardSummary,
+  EmiAnalysisRequest,
+  EmiAnalysisResponse,
   ErrorResponse,
   Gamification,
   HealthStatus,
   Investment,
   InvestmentSettings,
   LeaderboardEntry,
+  LifestyleAnalysisResponse,
+  LifestyleDataResponse,
   ListTransactionsParams,
   Nudge,
   NudgeRule,
@@ -2721,6 +2727,392 @@ export function useGetAdminCategoryAnalysis<
   request?: SecondParameter<typeof customFetch>;
 }): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetAdminCategoryAnalysisQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Analyze EMI affordability
+ */
+export const getAnalyzeEmiUrl = () => {
+  return `/api/emi-analyze`;
+};
+
+export const analyzeEmi = async (
+  emiAnalysisRequest: EmiAnalysisRequest,
+  options?: RequestInit,
+): Promise<EmiAnalysisResponse> => {
+  return customFetch<EmiAnalysisResponse>(getAnalyzeEmiUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(emiAnalysisRequest),
+  });
+};
+
+export const getAnalyzeEmiMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof analyzeEmi>>,
+    TError,
+    { data: BodyType<EmiAnalysisRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof analyzeEmi>>,
+  TError,
+  { data: BodyType<EmiAnalysisRequest> },
+  TContext
+> => {
+  const mutationKey = ["analyzeEmi"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof analyzeEmi>>,
+    { data: BodyType<EmiAnalysisRequest> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return analyzeEmi(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type AnalyzeEmiMutationResult = NonNullable<
+  Awaited<ReturnType<typeof analyzeEmi>>
+>;
+export type AnalyzeEmiMutationBody = BodyType<EmiAnalysisRequest>;
+export type AnalyzeEmiMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Analyze EMI affordability
+ */
+export const useAnalyzeEmi = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof analyzeEmi>>,
+    TError,
+    { data: BodyType<EmiAnalysisRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof analyzeEmi>>,
+  TError,
+  { data: BodyType<EmiAnalysisRequest> },
+  TContext
+> => {
+  return useMutation(getAnalyzeEmiMutationOptions(options));
+};
+
+/**
+ * @summary Get AI spending behavior analysis
+ */
+export const getGetAnalysisUrl = () => {
+  return `/api/analysis`;
+};
+
+export const getAnalysis = async (
+  options?: RequestInit,
+): Promise<AIAnalysisResponse> => {
+  return customFetch<AIAnalysisResponse>(getGetAnalysisUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetAnalysisQueryKey = () => {
+  return [`/api/analysis`] as const;
+};
+
+export const getGetAnalysisQueryOptions = <
+  TData = Awaited<ReturnType<typeof getAnalysis>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getAnalysis>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetAnalysisQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getAnalysis>>> = ({
+    signal,
+  }) => getAnalysis({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getAnalysis>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetAnalysisQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getAnalysis>>
+>;
+export type GetAnalysisQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get AI spending behavior analysis
+ */
+
+export function useGetAnalysis<
+  TData = Awaited<ReturnType<typeof getAnalysis>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getAnalysis>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetAnalysisQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Get overspending predictions
+ */
+export const getGetPredictionsUrl = () => {
+  return `/api/predictions`;
+};
+
+export const getPredictions = async (
+  options?: RequestInit,
+): Promise<AIPredictionResponse> => {
+  return customFetch<AIPredictionResponse>(getGetPredictionsUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetPredictionsQueryKey = () => {
+  return [`/api/predictions`] as const;
+};
+
+export const getGetPredictionsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPredictions>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getPredictions>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetPredictionsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getPredictions>>> = ({
+    signal,
+  }) => getPredictions({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getPredictions>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetPredictionsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getPredictions>>
+>;
+export type GetPredictionsQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get overspending predictions
+ */
+
+export function useGetPredictions<
+  TData = Awaited<ReturnType<typeof getPredictions>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getPredictions>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetPredictionsQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Get monthly financial trend data
+ */
+export const getGetLifestyleDataUrl = () => {
+  return `/api/lifestyle-data`;
+};
+
+export const getLifestyleData = async (
+  options?: RequestInit,
+): Promise<LifestyleDataResponse> => {
+  return customFetch<LifestyleDataResponse>(getGetLifestyleDataUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetLifestyleDataQueryKey = () => {
+  return [`/api/lifestyle-data`] as const;
+};
+
+export const getGetLifestyleDataQueryOptions = <
+  TData = Awaited<ReturnType<typeof getLifestyleData>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getLifestyleData>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetLifestyleDataQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getLifestyleData>>
+  > = ({ signal }) => getLifestyleData({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getLifestyleData>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetLifestyleDataQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getLifestyleData>>
+>;
+export type GetLifestyleDataQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get monthly financial trend data
+ */
+
+export function useGetLifestyleData<
+  TData = Awaited<ReturnType<typeof getLifestyleData>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getLifestyleData>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetLifestyleDataQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * @summary Get lifestyle inflation analysis
+ */
+export const getGetLifestyleAnalysisUrl = () => {
+  return `/api/lifestyle-analysis`;
+};
+
+export const getLifestyleAnalysis = async (
+  options?: RequestInit,
+): Promise<LifestyleAnalysisResponse> => {
+  return customFetch<LifestyleAnalysisResponse>(getGetLifestyleAnalysisUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetLifestyleAnalysisQueryKey = () => {
+  return [`/api/lifestyle-analysis`] as const;
+};
+
+export const getGetLifestyleAnalysisQueryOptions = <
+  TData = Awaited<ReturnType<typeof getLifestyleAnalysis>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getLifestyleAnalysis>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetLifestyleAnalysisQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getLifestyleAnalysis>>
+  > = ({ signal }) => getLifestyleAnalysis({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getLifestyleAnalysis>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetLifestyleAnalysisQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getLifestyleAnalysis>>
+>;
+export type GetLifestyleAnalysisQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Get lifestyle inflation analysis
+ */
+
+export function useGetLifestyleAnalysis<
+  TData = Awaited<ReturnType<typeof getLifestyleAnalysis>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getLifestyleAnalysis>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetLifestyleAnalysisQueryOptions(options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;

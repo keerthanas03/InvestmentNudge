@@ -1,93 +1,58 @@
 import { Router, type IRouter } from "express";
-import { eq } from "drizzle-orm";
-import { db, budgetsTable } from "@workspace/db";
-import {
-  CreateBudgetBody,
-  UpdateBudgetBody,
-  UpdateBudgetParams,
-  DeleteBudgetParams,
-} from "@workspace/api-zod";
+import { budgetsStore } from "../lib/in-memory-db";
 
 const router: IRouter = Router();
 
 router.get("/budgets", async (_req, res): Promise<void> => {
-  const budgets = await db.select().from(budgetsTable).orderBy(budgetsTable.category);
-  res.json(budgets);
+  res.json(budgetsStore);
 });
 
 router.post("/budgets", async (req, res): Promise<void> => {
-  const parsed = CreateBudgetBody.safeParse(req.body);
-  if (!parsed.success) {
-    res.status(400).json({ error: parsed.error.message });
+  const { category, limitAmount, period, budgetType } = req.body;
+
+  if (!category || !limitAmount) {
+    res.status(400).json({ error: "category and limitAmount are required" });
     return;
   }
 
-  const [budget] = await db
-    .insert(budgetsTable)
-    .values({
-      category: parsed.data.category,
-      limitAmount: parsed.data.limitAmount,
-      spentAmount: 0,
-      period: parsed.data.period,
-      budgetType: parsed.data.budgetType,
-      isActive: true,
-    })
-    .returning();
+  const newBudget = {
+    id: budgetsStore.length + 1,
+    category,
+    limitAmount: Number(limitAmount),
+    spentAmount: 0,
+    period: period || "monthly",
+    budgetType: budgetType || "category",
+    isActive: true,
+    createdAt: new Date().toISOString(),
+  };
 
-  res.status(201).json(budget);
+  budgetsStore.push(newBudget);
+  res.status(201).json(newBudget);
 });
 
 router.patch("/budgets/:id", async (req, res): Promise<void> => {
-  const params = UpdateBudgetParams.safeParse(req.params);
-  if (!params.success) {
-    res.status(400).json({ error: params.error.message });
-    return;
-  }
+  const id = Number(req.params.id);
+  const idx = budgetsStore.findIndex((b) => b.id === id);
 
-  const parsed = UpdateBudgetBody.safeParse(req.body);
-  if (!parsed.success) {
-    res.status(400).json({ error: parsed.error.message });
-    return;
-  }
-
-  const updateData: Record<string, unknown> = {};
-  if (parsed.data.category !== undefined) updateData.category = parsed.data.category;
-  if (parsed.data.limitAmount !== undefined) updateData.limitAmount = parsed.data.limitAmount;
-  if (parsed.data.period !== undefined) updateData.period = parsed.data.period;
-  if (parsed.data.budgetType !== undefined) updateData.budgetType = parsed.data.budgetType;
-  if (parsed.data.isActive !== undefined) updateData.isActive = parsed.data.isActive;
-
-  const [budget] = await db
-    .update(budgetsTable)
-    .set(updateData)
-    .where(eq(budgetsTable.id, params.data.id))
-    .returning();
-
-  if (!budget) {
+  if (idx === -1) {
     res.status(404).json({ error: "Budget not found" });
     return;
   }
 
-  res.json(budget);
+  budgetsStore[idx] = { ...budgetsStore[idx], ...req.body };
+  res.json(budgetsStore[idx]);
 });
 
 router.delete("/budgets/:id", async (req, res): Promise<void> => {
-  const params = DeleteBudgetParams.safeParse(req.params);
-  if (!params.success) {
-    res.status(400).json({ error: params.error.message });
-    return;
-  }
+  const id = Number(req.params.id);
+  const idx = budgetsStore.findIndex((b) => b.id === id);
 
-  const [budget] = await db
-    .delete(budgetsTable)
-    .where(eq(budgetsTable.id, params.data.id))
-    .returning();
-
-  if (!budget) {
+  if (idx === -1) {
     res.status(404).json({ error: "Budget not found" });
     return;
   }
 
+  budgetsStore.splice(idx, 1);
   res.sendStatus(204);
 });
 

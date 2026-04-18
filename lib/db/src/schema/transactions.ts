@@ -7,6 +7,8 @@ export const transactionsTable = pgTable("transactions", {
   merchant: text("merchant").notNull(),
   amount: real("amount").notNull(),
   category: text("category").notNull(),
+  subcategory: text("subcategory"),
+  type: text("type").notNull().default("Need"), // Impulse, Need, Luxury, Investment, Waste
   status: text("status").notNull().default("normal"),
   isImpulse: boolean("is_impulse").notNull().default(false),
   nudgeTriggered: boolean("nudge_triggered").notNull().default(false),

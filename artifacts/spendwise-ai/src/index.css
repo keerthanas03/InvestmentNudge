@@ -67,307 +67,142 @@
 }
 
 :root {
-  --button-outline: rgba(0,0,0, .10);
-  --badge-outline: rgba(0,0,0, .05);
+  --background: 345 40% 98%; /* Lighter, cleaner background */
+  --foreground: 215 25% 20%; /* Soft dark for text */
+  --subtext: 215 15% 50%;    /* Muted subtext */
 
-  --opaque-button-border-intensity: -8;
-  --elevate-1: rgba(0,0,0, .03);
-  --elevate-2: rgba(0,0,0, .08);
+  --border: rgba(255, 255, 255, 0.6);
+  --card: rgba(255, 255, 255, 0.85); /* Whiter, paler card base */
+  --glass-border: rgba(255, 255, 255, 0.7);
 
-  --background: 140 30% 97%;
-  --foreground: 160 40% 10%;
+  /* Icon Colors - slightly more pastel */
+  --teal: #4FD1C5;
+  --pink: #F687B3;
+  --yellow: #F6E05E;
+  --green: #68D391;
+  --lavender: #B794F4;
 
-  --border: 150 30% 85%;
-  --card: 0 0% 100%;
-  --card-foreground: 160 40% 10%;
-  --card-border: 150 20% 88%;
-
-  --sidebar: 0 0% 100%;
-  --sidebar-foreground: 160 40% 10%;
-  --sidebar-border: 150 20% 88%;
-  --sidebar-primary: 150 100% 28%;
-  --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 150 30% 93%;
-  --sidebar-accent-foreground: 160 40% 10%;
-  --sidebar-ring: 150 100% 28%;
-
-  --popover: 0 0% 100%;
-  --popover-foreground: 160 40% 10%;
-  --popover-border: 150 20% 88%;
-
-  --primary: 150 100% 25%;
-  --primary-foreground: 0 0% 100%;
-  
-  --secondary: 150 20% 90%;
-  --secondary-foreground: 160 40% 10%;
-
-  --muted: 150 20% 95%;
-  --muted-foreground: 160 20% 40%;
-
-  --accent: 150 40% 85%;
-  --accent-foreground: 160 40% 10%;
-
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 0 0% 100%;
-
-  --input: 150 20% 88%;
-  --ring: 150 100% 28%;
-  
-  --chart-1: 150 100% 28%;
-  --chart-2: 150 80% 38%;
-  --chart-3: 150 60% 48%;
-  --chart-4: 150 40% 58%;
-  --chart-5: 150 20% 68%;
-
-  --app-font-sans: 'Inter', sans-serif;
-  --app-font-serif: Georgia, serif;
-  --app-font-mono: Menlo, monospace;
-  --radius: .625rem;
-  
-  --shadow-2xs: 0px 1px 3px rgba(0,0,0,0.04);
-  --shadow-xs: 0px 2px 6px rgba(0,0,0,0.05);
-  --shadow-sm: 0px 2px 8px rgba(0,0,0,0.06), 0px 1px 2px rgba(0,0,0,0.04);
-  --shadow: 0px 4px 12px rgba(0,0,0,0.07), 0px 1px 3px rgba(0,0,0,0.04);
-  --shadow-md: 0px 4px 16px rgba(0,0,0,0.08), 0px 2px 6px rgba(0,0,0,0.04);
-  --shadow-lg: 0px 8px 24px rgba(0,0,0,0.10), 0px 4px 8px rgba(0,0,0,0.04);
-  --shadow-xl: 0px 16px 40px rgba(0,0,0,0.12), 0px 8px 16px rgba(0,0,0,0.04);
-  --shadow-2xl: 0px 24px 64px rgba(0,0,0,0.14);
-
-  --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-  --sidebar-accent-border: hsl(from hsl(var(--sidebar-accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-  --primary-border: hsl(from hsl(var(--primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-  --secondary-border: hsl(from hsl(var(--secondary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-  --muted-border: hsl(from hsl(var(--muted)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-  --accent-border: hsl(from hsl(var(--accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-  --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-}
-
-.dark {
-  --button-outline: rgba(255,255,255, .10);
-  --badge-outline: rgba(255,255,255, .05);
-
-  --opaque-button-border-intensity: 9;
-  --elevate-1: rgba(255,255,255, .04);
-  --elevate-2: rgba(255,255,255, .09);
-
-  --background: 160 20% 6%;
-  --foreground: 150 20% 95%;
-
-  --border: 160 20% 12%;
-  --card: 160 20% 8%;
-  --card-foreground: 150 20% 95%;
-  --card-border: 160 20% 15%;
-
-  --sidebar: 160 20% 8%;
-  --sidebar-foreground: 150 20% 95%;
-  --sidebar-border: 160 20% 12%;
-  --sidebar-primary: 150 100% 40%;
-  --sidebar-primary-foreground: 160 40% 10%;
-  --sidebar-accent: 160 20% 15%;
-  --sidebar-accent-foreground: 150 20% 95%;
-  --sidebar-ring: 150 100% 40%;
-
-  --popover: 160 20% 8%;
-  --popover-foreground: 150 20% 95%;
-  --popover-border: 160 20% 15%;
-
-  --primary: 150 100% 40%;
-  --primary-foreground: 160 40% 10%;
-  
-  --secondary: 160 20% 15%;
-  --secondary-foreground: 150 20% 95%;
-
-  --muted: 160 20% 12%;
-  --muted-foreground: 150 20% 65%;
-
-  --accent: 150 40% 20%;
-  --accent-foreground: 150 20% 95%;
-
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 0 0% 100%;
-
-  --input: 160 20% 15%;
-  --ring: 150 100% 40%;
-  
-  --chart-1: 150 100% 40%;
-  --chart-2: 150 80% 50%;
-  --chart-3: 150 60% 60%;
-  --chart-4: 150 40% 70%;
-  --chart-5: 150 20% 80%;
+  --radius: 1.5rem;
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply font-sans antialiased text-foreground;
+    background: #FDF2F4;
+    background-image: radial-gradient(at 0% 0%, rgba(253, 242, 244, 1) 0, transparent 50%), 
+                      radial-gradient(at 50% 0%, rgba(237, 233, 254, 1) 0, transparent 50%), 
+                      radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.05) 0, transparent 50%);
+    min-height: 100vh;
+    overflow-x: hidden;
   }
 }
 
 /* ============================================
-   GLASSMORPHISM UTILITIES
+   GLASSMORPHISM
    ============================================ */
-
-/* Ambient background mesh for pages */
-.glass-bg {
-  position: relative;
-  isolation: isolate;
-}
-
-.glass-bg::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background:
-    radial-gradient(ellipse 80% 60% at 10% 5%,  rgba(34, 197, 94, 0.12)  0%, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 90% 10%,  rgba(16, 185, 129, 0.10) 0%, transparent 55%),
-    radial-gradient(ellipse 70% 70% at 50% 90%,  rgba(5,  150,  105, 0.08) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 40% at 80% 60%,  rgba(52, 211, 153, 0.07) 0%, transparent 50%),
-    hsl(140, 30%, 97%);
-  pointer-events: none;
-}
-
-/* Glass card — used for page cards */
 .glass-card {
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid rgba(34, 197, 94, 0.18);
-  box-shadow:
-    0 4px 24px rgba(34, 197, 94, 0.06),
-    0 1px 4px rgba(0, 0, 0, 0.04),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(10px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(120%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04) !important;
+  transition: background-color 0.4s ease, box-shadow 0.4s ease;
 }
 
-/* Stronger glass for sidebar */
-.glass-sidebar {
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(24px) saturate(200%);
-  -webkit-backdrop-filter: blur(24px) saturate(200%);
-  border-right: 1px solid rgba(34, 197, 94, 0.15);
-  box-shadow: 4px 0 32px rgba(34, 197, 94, 0.05);
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06) !important;
 }
 
-/* Active nav item glow */
-.glass-nav-active {
-  background: linear-gradient(135deg, hsl(150, 100%, 25%), hsl(150, 80%, 32%));
-  box-shadow:
-    0 4px 14px rgba(34, 197, 94, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+/* ============================================
+   SIDEBAR
+   ============================================ */
+.sidebar-bg {
+  background: #FDF2F4 !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-/* Subtle green glow on hover */
-.glass-nav-hover:hover {
-  background: rgba(34, 197, 94, 0.08);
-  border: 1px solid rgba(34, 197, 94, 0.12);
+.sidebar-active {
+  background: rgba(236, 72, 153, 0.1) !important;
+  color: #EC4899 !important;
+  border-right: 3px solid #EC4899;
 }
 
-/* Green glow orb used decoratively */
-.green-orb {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(60px);
-  pointer-events: none;
+/* ============================================
+   BUTTONS
+   ============================================ */
+.btn-premium {
+  background: linear-gradient(135deg, #EC4899, #A78BFA);
+  color: white;
+  font-weight: 700;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* Logo text shimmer */
+.btn-premium:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.4);
+}
+
+/* ============================================
+   TABLES
+   ============================================ */
+.premium-table {
+  width: 100%;
+}
+.premium-table tr:nth-child(even) {
+  background: rgba(167, 139, 250, 0.05);
+}
+.premium-table td {
+  padding: 1rem 1.5rem;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes pop-in {
+  0% { transform: scale(0); opacity: 0; }
+  70% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.card-pop-in {
+  animation: pop-in 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* Icon Box Glows */
+.icon-box {
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+.glow-teal { box-shadow: 0 8px 16px rgba(20, 184, 166, 0.2); }
+.glow-pink { box-shadow: 0 8px 16px rgba(236, 72, 153, 0.2); }
+.glow-yellow { box-shadow: 0 8px 16px rgba(250, 204, 21, 0.2); }
+.glow-green { box-shadow: 0 8px 16px rgba(34, 197, 94, 0.2); }
+.glow-lavender { box-shadow: 0 8px 16px rgba(167, 139, 250, 0.2); }
+
 .logo-shimmer {
-  background: linear-gradient(135deg, hsl(150, 100%, 22%), hsl(160, 90%, 35%), hsl(145, 100%, 28%));
+  background: linear-gradient(90deg, #6B7280, #FBB6CE, #6B7280);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text;
+  animation: shimmer 5s linear infinite;
 }
 
-/* Glassmorphic badge */
-.glass-badge {
-  background: rgba(34, 197, 94, 0.12);
-  border: 1px solid rgba(34, 197, 94, 0.25);
-  color: hsl(150, 100%, 22%);
-  backdrop-filter: blur(8px);
+@keyframes shimmer {
+  to { background-position: 200% center; }
 }
 
-/* Metric card hover lift */
-.glass-card:hover {
-  transform: translateY(-1px);
-  box-shadow:
-    0 8px 32px rgba(34, 197, 94, 0.10),
-    0 2px 8px rgba(0, 0, 0, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  transition: all 0.2s ease;
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(167, 139, 250, 0.2);
+  border-radius: 10px;
 }
 
-/* Smooth transitions */
-.glass-card,
-.glass-sidebar,
-.glass-nav-active {
-  transition: all 0.2s ease;
-}
-
-/* ============================================
-   AUTO-GLASS — every rounded card in the app
-   ============================================ */
-@layer components {
-  /* All page cards (.rounded-xl.border pattern used throughout pages) */
-  .rounded-xl.border:not(input):not(button):not(a):not(.no-glass) {
-    background: rgba(255, 255, 255, 0.68) !important;
-    backdrop-filter: blur(18px) saturate(180%);
-    -webkit-backdrop-filter: blur(18px) saturate(180%);
-    border-color: rgba(34, 197, 94, 0.18) !important;
-    box-shadow:
-      0 4px 24px rgba(34, 197, 94, 0.07),
-      0 1px 4px rgba(0, 0, 0, 0.04),
-      inset 0 1px 0 rgba(255, 255, 255, 0.85);
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
-  }
-
-  /* shadcn Card component */
-  .rounded-xl.border.bg-card {
-    background: rgba(255, 255, 255, 0.68) !important;
-    backdrop-filter: blur(18px) saturate(180%);
-    -webkit-backdrop-filter: blur(18px) saturate(180%);
-    border-color: rgba(34, 197, 94, 0.18) !important;
-    box-shadow:
-      0 4px 24px rgba(34, 197, 94, 0.07),
-      0 1px 4px rgba(0, 0, 0, 0.04),
-      inset 0 1px 0 rgba(255, 255, 255, 0.85);
-  }
-
-  /* Hover lift on interactive cards */
-  .rounded-xl.border.shadow-sm:hover,
-  .rounded-xl.border.bg-card:hover {
-    box-shadow:
-      0 8px 36px rgba(34, 197, 94, 0.12),
-      0 2px 8px rgba(0, 0, 0, 0.05),
-      inset 0 1px 0 rgba(255, 255, 255, 0.95);
-    transform: translateY(-1px);
-  }
-
-  /* Popover / dialog glass */
-  [data-radix-popper-content-wrapper] > *,
-  [role="dialog"] .rounded-xl {
-    background: rgba(255, 255, 255, 0.92) !important;
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border-color: rgba(34, 197, 94, 0.2) !important;
-  }
-
-  /* Table glass */
-  table {
-    background: transparent;
-  }
-  thead tr {
-    background: rgba(34, 197, 94, 0.04);
-  }
-  tbody tr:hover {
-    background: rgba(34, 197, 94, 0.04) !important;
-  }
-
-  /* Green tinted input focus ring */
-  input:focus-visible,
-  select:focus-visible,
-  textarea:focus-visible {
-    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
-  }
-}

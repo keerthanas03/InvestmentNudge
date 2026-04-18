@@ -213,10 +213,12 @@ export const DeleteBudgetParams = zod.object({
 export const ListNudgeRulesResponseItem = zod.object({
   id: zod.number(),
   name: zod.string(),
+  category: zod.string(),
+  condition: zod.string().describe(" > or < "),
   thresholdAmount: zod.number(),
-  investmentType: zod.string().describe("fixed or percentage"),
-  investmentValue: zod.number(),
-  nudgeIntensity: zod.string().describe("gentle or aggressive"),
+  message: zod.string(),
+  ruleType: zod.string().describe("Impulse, Need, Investment, Luxury, Waste"),
+  priority: zod.string().describe("high, medium, low"),
   isActive: zod.boolean(),
   createdAt: zod.coerce.date(),
 });
@@ -227,10 +229,12 @@ export const ListNudgeRulesResponse = zod.array(ListNudgeRulesResponseItem);
  */
 export const CreateNudgeRuleBody = zod.object({
   name: zod.string(),
+  category: zod.string(),
+  condition: zod.string(),
   thresholdAmount: zod.number(),
-  investmentType: zod.string(),
-  investmentValue: zod.number(),
-  nudgeIntensity: zod.string(),
+  message: zod.string(),
+  ruleType: zod.string(),
+  priority: zod.string().optional(),
 });
 
 /**
@@ -242,20 +246,24 @@ export const UpdateNudgeRuleParams = zod.object({
 
 export const UpdateNudgeRuleBody = zod.object({
   name: zod.string().optional(),
+  category: zod.string().optional(),
+  condition: zod.string().optional(),
   thresholdAmount: zod.number().optional(),
-  investmentType: zod.string().optional(),
-  investmentValue: zod.number().optional(),
-  nudgeIntensity: zod.string().optional(),
+  message: zod.string().optional(),
+  ruleType: zod.string().optional(),
+  priority: zod.string().optional(),
   isActive: zod.boolean().optional(),
 });
 
 export const UpdateNudgeRuleResponse = zod.object({
   id: zod.number(),
   name: zod.string(),
+  category: zod.string(),
+  condition: zod.string().describe(" > or < "),
   thresholdAmount: zod.number(),
-  investmentType: zod.string().describe("fixed or percentage"),
-  investmentValue: zod.number(),
-  nudgeIntensity: zod.string().describe("gentle or aggressive"),
+  message: zod.string(),
+  ruleType: zod.string().describe("Impulse, Need, Investment, Luxury, Waste"),
+  priority: zod.string().describe("high, medium, low"),
   isActive: zod.boolean(),
   createdAt: zod.coerce.date(),
 });
@@ -463,3 +471,70 @@ export const GetAdminCategoryAnalysisResponseItem = zod.object({
 export const GetAdminCategoryAnalysisResponse = zod.array(
   GetAdminCategoryAnalysisResponseItem,
 );
+
+/**
+ * @summary Analyze EMI affordability
+ */
+export const AnalyzeEmiBody = zod.object({
+  salary: zod.number(),
+  productType: zod.string(),
+  cost: zod.number(),
+  downPayment: zod.number(),
+  tenure: zod.number(),
+  interestRate: zod.number(),
+});
+
+export const AnalyzeEmiResponse = zod.object({
+  emi: zod.number(),
+  safeLimit: zod.number(),
+  risk: zod.string().describe("SAFE, CAUTION, or DANGER"),
+  percentage: zod.number(),
+});
+
+/**
+ * @summary Get AI spending behavior analysis
+ */
+export const GetAnalysisResponse = zod.object({
+  userProfile: zod.object({
+    classification: zod.string(),
+    impulseScore: zod.number(),
+    dominantCategory: zod.string(),
+  }),
+  activeNudge: zod.object({
+    intensity: zod.string(),
+    message: zod.string(),
+    suggestedAction: zod.string(),
+  }),
+  behavioralStats: zod.object({
+    lateNightSpends: zod.number(),
+    weekendSpends: zod.number(),
+  }),
+});
+
+/**
+ * @summary Get overspending predictions
+ */
+export const GetPredictionsResponse = zod.object({
+  predictedSpend: zod.number(),
+  riskScore: zod.number(),
+  riskLevel: zod.string(),
+  savingsPotential: zod.number(),
+});
+
+/**
+ * @summary Get monthly financial trend data
+ */
+export const GetLifestyleDataResponse = zod.object({
+  months: zod.array(zod.string()),
+  income: zod.array(zod.number()),
+  spending: zod.array(zod.number()),
+});
+
+/**
+ * @summary Get lifestyle inflation analysis
+ */
+export const GetLifestyleAnalysisResponse = zod.object({
+  incomeGrowth: zod.number(),
+  spendingGrowth: zod.number(),
+  status: zod.string().describe("HEALTHY, MODERATE, HIGH"),
+});

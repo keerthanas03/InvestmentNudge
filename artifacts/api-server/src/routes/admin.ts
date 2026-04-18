@@ -1,44 +1,43 @@
 import { Router, type IRouter } from "express";
-import { eq, gte } from "drizzle-orm";
-import { db, transactionsTable, investmentsTable, nudgesTable } from "@workspace/db";
+import {
+  nudgesStore,
+  nudgeRulesStore,
+  investmentsStore,
+  transactionsStore,
+} from "../lib/in-memory-db";
 
 const router: IRouter = Router();
 
 const CATEGORY_COLORS: Record<string, string> = {
-  "Food & Dining": "#22c55e",
-  "Shopping": "#3b82f6",
-  "Entertainment": "#a855f7",
-  "Transportation": "#f59e0b",
-  "Subscriptions": "#ef4444",
+  "Food & Dining": "#14B8A6",
+  "Shopping": "#EC4899",
+  "Entertainment": "#FACC15",
+  "Transport": "#A78BFA",
+  "Subscriptions": "#22C55E",
   "Groceries": "#10b981",
-  "Healthcare": "#06b6d4",
+  "Health & Medical": "#06b6d4",
   "Travel": "#f97316",
   "Electronics": "#6366f1",
-  "Clothing": "#ec4899",
+  "Investments": "#22C55E",
 };
 
 router.get("/admin/stats", async (_req, res): Promise<void> => {
-  const allNudges = await db.select().from(nudgesTable);
-  const allInvestments = await db.select().from(investmentsTable);
-  const allTransactions = await db.select().from(transactionsTable);
+  const totalNudgesFired = nudgesStore.length;
+  const investmentsTriggered = investmentsStore.filter((i) => i.source === "auto").length;
+  const totalAmountInvested = investmentsStore.reduce((sum, i) => sum + i.amount, 0);
 
-  const totalNudgesFired = allNudges.length;
-  const investmentsTriggered = allInvestments.filter(i => i.source === "auto").length;
-  const totalAmountInvested = allInvestments.reduce((sum, i) => sum + i.amount, 0);
-
-  const acceptedNudges = allNudges.filter(n => n.status === "accepted").length;
-  const resolvedNudges = allNudges.filter(n => n.status !== "pending").length;
+  const acceptedNudges = nudgesStore.filter((n) => n.status === "accepted").length;
+  const resolvedNudges = nudgesStore.filter((n) => n.status !== "pending").length;
   const nudgeAcceptanceRate = resolvedNudges > 0 ? (acceptedNudges / resolvedNudges) * 100 : 0;
 
-  const impulseCount = allTransactions.filter(t => t.isImpulse).length;
-  const avgImpulseScore = allTransactions.length > 0
-    ? (impulseCount / allTransactions.length) * 100
-    : 0;
+  const impulseCount = transactionsStore.filter((t) => t.isImpulse).length;
+  const avgImpulseScore =
+    transactionsStore.length > 0 ? (impulseCount / transactionsStore.length) * 100 : 0;
 
   res.json({
     totalNudgesFired,
     investmentsTriggered,
-    totalTransactions: allTransactions.length,
+    totalTransactions: transactionsStore.length,
     totalUsers: 1,
     avgImpulseScore: Math.round(avgImpulseScore),
     totalAmountInvested,
@@ -54,18 +53,16 @@ router.get("/admin/spending-trends", async (_req, res): Promise<void> => {
     const date = new Date();
     date.setDate(date.getDate() - i);
     date.setHours(0, 0, 0, 0);
-
     const nextDate = new Date(date);
     nextDate.setDate(nextDate.getDate() + 1);
 
-    const txns = await db
-      .select()
-      .from(transactionsTable)
-      .where(gte(transactionsTable.createdAt, date));
+    const dayTxns = transactionsStore.filter((t) => {
+      const d = new Date(t.createdAt);
+      return d >= date && d < nextDate;
+    });
 
-    const dayTxns = txns.filter(t => new Date(t.createdAt) < nextDate);
     const totalSpend = dayTxns.reduce((sum, t) => sum + t.amount, 0);
-    const impulseSpend = dayTxns.filter(t => t.isImpulse).reduce((sum, t) => sum + t.amount, 0);
+    const impulseSpend = dayTxns.filter((t) => t.isImpulse).reduce((sum, t) => sum + t.amount, 0);
     const normalSpend = totalSpend - impulseSpend;
 
     trend.push({
@@ -80,10 +77,9 @@ router.get("/admin/spending-trends", async (_req, res): Promise<void> => {
 });
 
 router.get("/admin/category-analysis", async (_req, res): Promise<void> => {
-  const txns = await db.select().from(transactionsTable);
-
   const categoryMap: Record<string, { amount: number; count: number }> = {};
-  for (const txn of txns) {
+
+  for (const txn of transactionsStore) {
     if (!categoryMap[txn.category]) {
       categoryMap[txn.category] = { amount: 0, count: 0 };
     }

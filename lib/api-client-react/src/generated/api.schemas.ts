@@ -93,30 +93,37 @@ export interface UpdateBudgetBody {
 export interface NudgeRule {
   id: number;
   name: string;
+  category: string;
+  /**  > or <  */
+  condition: string;
   thresholdAmount: number;
-  /** fixed or percentage */
-  investmentType: string;
-  investmentValue: number;
-  /** gentle or aggressive */
-  nudgeIntensity: string;
+  message: string;
+  /** Impulse, Need, Investment, Luxury, Waste */
+  ruleType: string;
+  /** high, medium, low */
+  priority: string;
   isActive: boolean;
   createdAt: string;
 }
 
 export interface CreateNudgeRuleBody {
   name: string;
+  category: string;
+  condition: string;
   thresholdAmount: number;
-  investmentType: string;
-  investmentValue: number;
-  nudgeIntensity: string;
+  message: string;
+  ruleType: string;
+  priority?: string;
 }
 
 export interface UpdateNudgeRuleBody {
   name?: string;
+  category?: string;
+  condition?: string;
   thresholdAmount?: number;
-  investmentType?: string;
-  investmentValue?: number;
-  nudgeIntensity?: string;
+  message?: string;
+  ruleType?: string;
+  priority?: string;
   isActive?: boolean;
 }
 
@@ -214,6 +221,66 @@ export interface AdminStats {
   avgImpulseScore: number;
   totalAmountInvested: number;
   nudgeAcceptanceRate: number;
+}
+
+export interface EmiAnalysisRequest {
+  salary: number;
+  productType: string;
+  cost: number;
+  downPayment: number;
+  tenure: number;
+  interestRate: number;
+}
+
+export interface EmiAnalysisResponse {
+  emi: number;
+  safeLimit: number;
+  /** SAFE, CAUTION, or DANGER */
+  risk: string;
+  percentage: number;
+}
+
+export type AIAnalysisResponseUserProfile = {
+  classification: string;
+  impulseScore: number;
+  dominantCategory: string;
+};
+
+export type AIAnalysisResponseActiveNudge = {
+  intensity: string;
+  message: string;
+  suggestedAction: string;
+};
+
+export type AIAnalysisResponseBehavioralStats = {
+  lateNightSpends: number;
+  weekendSpends: number;
+};
+
+export interface AIAnalysisResponse {
+  userProfile: AIAnalysisResponseUserProfile;
+  activeNudge: AIAnalysisResponseActiveNudge;
+  behavioralStats: AIAnalysisResponseBehavioralStats;
+}
+
+export interface AIPredictionResponse {
+  predictedSpend: number;
+  riskScore: number;
+  riskLevel: string;
+  savingsPotential: number;
+}
+
+export interface LifestyleDataResponse {
+  months: string[];
+  income: number[];
+  spending: number[];
+}
+
+export interface LifestyleAnalysisResponse {
+  incomeGrowth: number;
+  spendingGrowth: number;
+  /** HEALTHY, MODERATE, HIGH */
+  status: string;
 }
 
 export type ListTransactionsParams = {

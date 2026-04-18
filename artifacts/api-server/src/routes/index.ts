@@ -8,6 +8,8 @@ import investmentsRouter from "./investments";
 import gamificationRouter from "./gamification";
 import dashboardRouter from "./dashboard";
 import adminRouter from "./admin";
+import plannerRouter from "./planner";
+import aiEngineRouter from "./ai-engine";
 
 const router: IRouter = Router();
 
@@ -20,5 +22,7 @@ router.use(investmentsRouter);
 router.use(gamificationRouter);
 router.use(dashboardRouter);
 router.use(adminRouter);
+router.use(plannerRouter);
+router.use(aiEngineRouter);
 
 export default router;

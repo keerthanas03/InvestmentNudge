@@ -55,106 +55,127 @@ export default function Gamification() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10 pb-12">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.5 }}
       >
-        <h1 className="text-3xl font-bold tracking-tight">Gamification</h1>
-        <p className="text-muted-foreground mt-1">Track your financial wellness achievements.</p>
+        <h1 className="text-5xl font-black tracking-tight text-[#4B5563] logo-shimmer">Gamification</h1>
+        <p className="text-[#9CA3AF] font-medium mt-2 text-lg">Elevate your financial status through behavioral mastery.</p>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 relative">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[#FAF089]/5 rounded-full blur-[120px] pointer-events-none" />
+        
         {/* Level & Progress Card */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, y: 100, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ delay: 0.1 }}
-          className="p-6 rounded-xl border border-border bg-card shadow-sm"
+          className="glass-card p-10 group relative overflow-hidden shadow-2xl border-none"
         >
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-full bg-primary/10">
-                <Trophy className="h-6 w-6 text-primary" />
+          <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#FAF089]/10 rounded-full blur-[100px] group-hover:bg-[#FAF089]/20 transition-all duration-700" />
+          
+          <div className="flex items-center justify-between mb-8 relative z-10">
+            <div className="flex items-center gap-6">
+              <div className="p-5 rounded-[2rem] bg-gradient-to-br from-[#FAF089]/30 to-[#FAF089]/5 shadow-inner">
+                <Trophy className="h-8 w-8 text-[#D69710]" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Current Level</p>
-                <h2 className="text-2xl font-bold">{gamification?.level}</h2>
+                <p className="font-black text-xs uppercase tracking-widest text-[#9CA3AF]">Current status</p>
+                <h2 className="text-4xl font-black text-[#4B5563] tracking-tighter">{gamification?.level}</h2>
               </div>
             </div>
-            <Badge className={`text-sm px-3 py-1 ${LEVEL_COLORS[gamification?.level ?? "Starter"]}`}>
+            <div className="px-6 py-3 rounded-2xl bg-white/60 font-black text-[#D69710] shadow-sm">
               {gamification?.totalPoints?.toLocaleString() ?? 0} pts
-            </Badge>
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm text-muted-foreground">
-              <span>{currentLevel.name}</span>
-              <span>{nextLevel ? nextLevel.name : "Max Level"}</span>
+          <div className="space-y-4 relative z-10">
+            <div className="flex justify-between items-end mb-2">
+              <span className="text-xs font-black uppercase tracking-widest text-[#9CA3AF] opacity-60">{currentLevel.name}</span>
+              <span className="text-xs font-black uppercase tracking-widest text-[#D69710]">{nextLevel ? nextLevel.name : "Vanguard"}</span>
             </div>
-            <Progress value={progressPercent} className="h-3" />
-            <p className="text-xs text-muted-foreground text-right">
+            <div className="h-4 w-full bg-white/20 rounded-full overflow-hidden border border-white/30 p-1">
+              <motion.div 
+                initial={{ width: 0 }}
+                animate={{ width: `${progressPercent}%` }}
+                transition={{ duration: 1.5, ease: "easeOut" }}
+                className="h-full bg-gradient-to-r from-[#FAF089] to-[#F6AD55] rounded-full shadow-[0_0_15px_rgba(250,240,137,0.5)]"
+              />
+            </div>
+            <p className="text-xs font-black text-[#9CA3AF] text-right tracking-tight">
               {nextLevel
-                ? `${(nextLevel.min - (gamification?.totalPoints ?? 0)).toLocaleString()} pts to ${nextLevel.name}`
-                : "Maximum level reached!"}
+                ? `${(nextLevel.min - (gamification?.totalPoints ?? 0)).toLocaleString()} pts to ascend`
+                : "You have reached financial enlightenment!"}
             </p>
           </div>
         </motion.div>
 
         {/* Streak Card */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, y: 100, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ delay: 0.15 }}
-          className="p-6 rounded-xl border border-border bg-card shadow-sm"
+          className="glass-card p-10 group relative overflow-hidden shadow-2xl border-none"
         >
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-3 rounded-full bg-orange-50">
-              <Flame className="h-6 w-6 text-orange-500" />
+          <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-[#FBB6CE]/10 rounded-full blur-[100px] group-hover:bg-[#FBB6CE]/20 transition-all duration-700" />
+          
+          <div className="flex items-center gap-6 mb-10 relative z-10">
+            <div className="p-5 rounded-[2rem] bg-gradient-to-br from-[#FBB6CE]/30 to-[#FBB6CE]/5 shadow-inner">
+              <Flame className={`h-8 w-8 ${gamification?.streak ? 'text-[#FBB6CE] animate-pulse' : 'text-[#9CA3AF]'}`} />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">Current Streak</p>
-              <h2 className="text-2xl font-bold">{gamification?.streak} days</h2>
+              <p className="font-black text-xs uppercase tracking-widest text-[#9CA3AF]">Retention Power</p>
+              <h2 className="text-4xl font-black text-[#4B5563] tracking-tighter">{gamification?.streak} Day Streak</h2>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-3">
-            {[...Array(7)].map((_, i) => (
-              <div
-                key={i}
-                className={`h-8 rounded-md flex items-center justify-center text-xs font-medium ${
-                  i < (gamification?.streak ?? 0)
-                    ? "bg-orange-500 text-white"
-                    : "bg-muted text-muted-foreground"
-                }`}
-              >
-                {i + 1}d
-              </div>
-            ))}
+          
+          <div className="grid grid-cols-7 gap-3 relative z-10">
+            {[...Array(7)].map((_, i) => {
+              const isActive = i < (gamification?.streak ?? 0);
+              return (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 + i * 0.05 }}
+                  className={`aspect-square rounded-2xl flex items-center justify-center transition-all ${
+                    isActive
+                      ? "bg-gradient-to-br from-[#FBB6CE] to-[#D6BCFA] text-white shadow-lg scale-110"
+                      : "bg-white/40 text-[#9CA3AF] border border-white/50"
+                  }`}
+                >
+                  {isActive ? <Star className="w-4 h-4" /> : <span className="text-[10px] font-black">{i + 1}</span>}
+                </motion.div>
+              );
+            })}
           </div>
         </motion.div>
       </div>
 
       {/* Achievement Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { label: "Impulses Avoided", value: gamification?.impulsesAvoided ?? 0, icon: Zap, color: "text-green-600", bg: "bg-green-50" },
-          { label: "Budgets Respected", value: gamification?.budgetsRespected ?? 0, icon: Target, color: "text-blue-600", bg: "bg-blue-50" },
-          { label: "Investments Made", value: gamification?.investmentsMade ?? 0, icon: TrendingUp, color: "text-purple-600", bg: "bg-purple-50" },
-          { label: "Streak Bonuses", value: gamification?.streakBonuses ?? 0, icon: Star, color: "text-yellow-600", bg: "bg-yellow-50" },
+          { label: "Impulses Avoided", value: gamification?.impulsesAvoided ?? 0, icon: Zap, color: "#81E6D9", bg: "bg-[#81E6D9]/10" },
+          { label: "Budgets Respected", value: gamification?.budgetsRespected ?? 0, icon: Target, color: "#D6BCFA", bg: "bg-[#D6BCFA]/10" },
+          { label: "Investments Made", value: gamification?.investmentsMade ?? 0, icon: TrendingUp, color: "#FBB6CE", bg: "bg-[#FBB6CE]/10" },
+          { label: "Streak Bonuses", value: gamification?.streakBonuses ?? 0, icon: Star, color: "#FAF089", bg: "bg-[#FAF089]/10" },
         ].map((item, i) => (
           <motion.div
             key={item.label}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 + i * 0.05 }}
-            className="p-4 rounded-xl border border-border bg-card shadow-sm"
+            whileHover={{ y: -5 }}
+            className="glass-card p-6 shadow-xl border-none group cursor-default"
           >
-            <div className={`p-2 rounded-lg ${item.bg} w-fit mb-3`}>
-              <item.icon className={`h-5 w-5 ${item.color}`} />
+            <div className={`p-4 rounded-2xl ${item.bg} w-fit mb-4 group-hover:scale-110 transition-transform`}>
+              <item.icon className="h-6 w-6" style={{ color: item.color }} />
             </div>
-            <p className="text-2xl font-bold">{item.value}</p>
-            <p className="text-xs text-muted-foreground mt-1">{item.label}</p>
+            <p className="text-4xl font-black text-[#4B5563] tracking-tighter">{item.value}</p>
+            <p className="text-[10px] font-black uppercase tracking-widest text-[#9CA3AF] mt-1">{item.label}</p>
           </motion.div>
         ))}
       </div>
@@ -164,25 +185,30 @@ export default function Gamification() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.35 }}
-        className="p-6 rounded-xl border border-border bg-card shadow-sm"
+        className="glass-card p-10 relative overflow-hidden shadow-2xl border-none"
       >
-        <div className="flex items-center gap-2 mb-5">
-          <Award className="h-5 w-5 text-primary" />
-          <h3 className="font-semibold text-lg">How to Earn Points</h3>
+        <div className="absolute inset-0 bg-gradient-to-br from-[#81E6D9]/5 via-[#D6BCFA]/5 to-[#FBB6CE]/5" />
+        <div className="flex items-center gap-4 mb-10 relative z-10">
+          <div className="p-4 rounded-2xl bg-white/60 shadow-sm">
+            <Award className="h-6 w-6 text-[#A78BFA]" />
+          </div>
+          <h3 className="font-black text-2xl text-[#4B5563]">Point Accrual Strategy</h3>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 relative z-10">
           {POINTS_CONFIG.map((config, i) => (
             <motion.div
               key={config.label}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, y: 100, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ delay: 0.4 + i * 0.05 }}
-              whileHover={{ scale: 1.03 }}
-              className={`p-4 rounded-lg ${config.bg} border border-transparent`}
+              whileHover={{ scale: 1.05, y: -5 }}
+              className="p-6 rounded-[2.5rem] bg-white/60 border-none shadow-sm flex flex-col items-center text-center group"
             >
-              <config.icon className={`h-5 w-5 ${config.color} mb-2`} />
-              <p className={`text-xl font-bold ${config.color}`}>{config.points}</p>
-              <p className="text-xs text-muted-foreground mt-1">{config.label}</p>
+              <div className="p-4 rounded-2xl bg-white mb-4 shadow-inner group-hover:scale-110 transition-all">
+                <config.icon className="h-6 w-6" style={{ color: config.color.replace('text-', '') }} />
+              </div>
+              <p className="text-2xl font-black text-[#4B5563]">{config.points}</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-[#9CA3AF] mt-2">{config.label}</p>
             </motion.div>
           ))}
         </div>
@@ -193,40 +219,61 @@ export default function Gamification() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        className="p-6 rounded-xl border border-border bg-card shadow-sm"
+        className="glass-card p-10 shadow-2xl border-none"
       >
-        <div className="flex items-center gap-2 mb-5">
-          <Trophy className="h-5 w-5 text-primary" />
-          <h3 className="font-semibold text-lg">Leaderboard</h3>
+        <div className="flex items-center justify-between mb-10">
+          <div className="flex items-center gap-4">
+            <div className="p-4 rounded-2xl bg-white/60">
+              <Trophy className="h-6 w-6 text-[#FBB6CE]" />
+            </div>
+            <h3 className="font-black text-2xl text-[#4B5563]">Global Standings</h3>
+          </div>
+          <Badge className="bg-[#D6BCFA] text-white font-black px-4 py-2 rounded-full border-none">Top 1% Performers</Badge>
         </div>
+
         {leaderboardLoading ? (
-          <div className="flex items-center justify-center h-32">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+          <div className="flex items-center justify-center h-48">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FBB6CE]"></div>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {leaderboard?.map((entry, i) => (
               <motion.div
                 key={entry.rank}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.55 + i * 0.05 }}
-                className={`flex items-center justify-between p-3 rounded-lg ${
-                  entry.name === "You" ? "bg-primary/5 border border-primary/20" : "bg-muted/30"
+                className={`flex items-center justify-between p-6 rounded-[2.5rem] transition-all ${
+                  entry.name === "You" 
+                    ? "bg-gradient-to-r from-[#D6BCFA]/20 to-[#FBB6CE]/20 border border-white/50 shadow-lg scale-[1.02]" 
+                    : "bg-white/40 hover:bg-white/60"
                 }`}
               >
-                <div className="flex items-center gap-3">
-                  <span className="text-lg w-8 text-center">
-                    {RANK_ICONS[entry.rank] ?? `#${entry.rank}`}
+                <div className="flex items-center gap-6">
+                  <span className="text-2xl font-black w-12 h-12 flex items-center justify-center rounded-2xl bg-white/80 shadow-sm text-[#4B5563]">
+                    {RANK_ICONS[entry.rank] ?? entry.rank}
                   </span>
-                  <div>
-                    <p className={`font-medium ${entry.name === "You" ? "text-primary" : ""}`}>{entry.name}</p>
-                    <p className="text-xs text-muted-foreground">{entry.streak} day streak</p>
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center font-black text-white text-lg shadow-inner">
+                        {entry.name[0]}
+                    </div>
+                    <div>
+                        <p className={`font-black text-lg ${entry.name === "You" ? "text-[#4B5563]" : "text-[#4B5563]"}`}>
+                            {entry.name}
+                            {entry.name === "You" && <span className="ml-2 text-xs font-black uppercase text-[#D6BCFA]">(MVP)</span>}
+                        </p>
+                        <div className="flex items-center gap-2 mt-1">
+                            <Flame className="w-3.5 h-3.5 text-orange-500" />
+                            <p className="text-xs text-[#9CA3AF] font-bold">{entry.streak} day streak</p>
+                        </div>
+                    </div>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-semibold">{entry.points.toLocaleString()} pts</p>
-                  <Badge className={`text-xs ${LEVEL_COLORS[entry.level] ?? ""}`}>{entry.level}</Badge>
+                  <p className="font-black text-xl text-[#4B5563] tracking-tight">{entry.points.toLocaleString()} pts</p>
+                  <Badge className={`text-[10px] uppercase font-black tracking-widest mt-1 border-none shadow-sm ${LEVEL_COLORS[entry.level] ?? ""}`}>
+                    {entry.level} Tier
+                  </Badge>
                 </div>
               </motion.div>
             ))}
